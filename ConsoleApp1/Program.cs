@@ -1,33 +1,21 @@
 ﻿using System;
 using System.IO;
-using System.Text;
+using System.Threading.Tasks;
 using HandlerIO;
 
 namespace ConsoleApp1
 {
     class Program
     {
-        static void Main(string[] args)
+        static async Task Main(string[] args)
         {
-            var test = new string[]
-            {
-                "1615560000: 1\n",
-                "1615560005: 1\n",
-                "1615560013: 1\n",
-                "1615560018: 1\n",
-                "1615560024: 0\n",
-                "1615560030: 1\n",
-                "1615560037: 0\n",
-            };
-            var sr = new StreamReader(GenerateStreamFromStringList(test));
-            var lines = sr.ReadUntil();
-            sr = new StreamReader(lines.Result);
-            while (sr.ReadLine() is { } line)
-            {
-                Console.WriteLine(line);
-            }
+            await using var fs = File.Open("/Users/artemsydorovych/RiderProjects/InterviewTaskSM/test.txt",
+                FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
+            await using var bs = new BufferedStream(fs);
+            using var sr = new StreamReader(bs);
+            await HandlerIo.ReadUntil(sr);
         }
-        
+
         public static Stream GenerateStreamFromStringList(string[] s)
         {
             var stream = new MemoryStream();
