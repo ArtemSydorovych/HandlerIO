@@ -13,7 +13,12 @@ namespace ConsoleApp1
                 FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
             await using var bs = new BufferedStream(fs);
             using var sr = new StreamReader(bs);
-            await HandlerIo.ReadUntil(sr);
+            await foreach (var line in HandlerIo.ReadUntil(sr)) 
+            {
+                Console.WriteLine(line);
+            }
+
+
         }
 
         public static Stream GenerateStreamFromStringList(string[] s)
